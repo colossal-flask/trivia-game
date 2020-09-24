@@ -16,9 +16,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import org.json.simple.JSONObject;
-
-import com.trivia.util.buttonHandlers;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +25,6 @@ import java.net.URL;
 import java.net.URLConnection;
 
 public class GUI extends Application{
-
     private Button randomQButton = new Button("Give me a random question!");
     private Button random10QButton = new Button("Give me 10!");
     private HBox quickQHBox = new HBox();
@@ -99,4 +95,7 @@ public class GUI extends Application{
         }
     };
 
+    public static void main(String[] args){
+        launch(args);
+    }
 }
