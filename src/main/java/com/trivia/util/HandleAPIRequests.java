@@ -1,7 +1,7 @@
 package com.trivia.util;
 
-import com.trivia.model.TriviaSearch;
 import com.google.gson.Gson;
+import com.trivia.model.TriviaSearch;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
