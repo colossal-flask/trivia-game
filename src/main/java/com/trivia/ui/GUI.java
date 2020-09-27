@@ -52,17 +52,18 @@ public class GUI extends Application{
         borderPane.setTop(welcomeLabel);
         borderPane.setCenter(quickQHBox);
 
-        mainScene = new Scene(borderPane, 400, 300);
+        mainScene = new Scene(borderPane, 400, 400);
     }
 
-    private EventHandler<ActionEvent> randomQEvent = actionEvent -> {
+    private final EventHandler<ActionEvent> randomQEvent = actionEvent -> {
         System.out.println("Fetching question from API.");
         TriviaSearch results = APIHandler.handleRandomRequest();
 
-        CreateAnsweringScene nodeSwitcher = new CreateAnsweringScene(results);
+        CreateAnsweringScene nodeSwitcher = new CreateAnsweringScene(results.getQuestions().get(0));
         Node[] nodeList = nodeSwitcher.creator();
 
         BorderPane.setAlignment(nodeList[0], Pos.CENTER);
+        BorderPane.setAlignment(nodeList[2], Pos.CENTER);
         borderPane.setTop(nodeList[0]);
         borderPane.setCenter(nodeList[1]);
         borderPane.setBottom(nodeList[2]);

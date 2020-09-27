@@ -3,6 +3,7 @@ package com.trivia.util;
 import com.trivia.model.TQuestion;
 import com.trivia.model.TriviaSearch;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -13,15 +14,18 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import java.util.Random;
 
 import java.util.List;
 
 public class CreateAnsweringScene {
 
-    private TriviaSearch questionList;
+    private Random rand;
+    private TQuestion question;
 
-    public CreateAnsweringScene(TriviaSearch search){
-        this.questionList = search;
+    public CreateAnsweringScene(TQuestion question){
+        this.question = question;
+        rand = new Random();
     }
 
     public Node[] creator(){
@@ -36,10 +40,8 @@ public class CreateAnsweringScene {
         Button submitButton = new Button("Submit");
         submitButton.setFont(new Font("Arial", 24));
 
-        List<TQuestion> questions = questionList.getQuestions();
-
         String questionNumStr = "Question 1:";
-        String questionStr = questions.get(0).getQuestion();
+        String questionStr = question.getQuestion();
 
         Label questionNum = new Label(questionNumStr);
         Label questionTitle = new Label(questionStr);
@@ -50,7 +52,7 @@ public class CreateAnsweringScene {
         questionTitle.setFont(new Font("Arial", 18));
         questionNum.setFont(new Font("Arial", 18));
 
-        if (questions.get(0).getType().equals("boolean")){
+        if (question.getType().equals("boolean")){
             RadioButton T = new RadioButton("True");
             RadioButton F = new RadioButton("False");
 
@@ -59,14 +61,52 @@ public class CreateAnsweringScene {
 
             vbox.getChildren().addAll(T, F);
         }
+        else {
+            int correctAns = rand.nextInt(4);
+            RadioButton A1 = new RadioButton();
+            RadioButton A2 = new RadioButton();
+            RadioButton A3 = new RadioButton();
+            RadioButton A4 = new RadioButton();
+
+            switch (correctAns){
+                case 0:
+                    A1 = new RadioButton(question.getCorrect_answer());
+                    A2 = new RadioButton(question.getIncorrect_answers().get(0));
+                    A3 = new RadioButton(question.getIncorrect_answers().get(1));
+                    A4 = new RadioButton(question.getIncorrect_answers().get(2));
+                    break;
+                case 1:
+                    A1 = new RadioButton(question.getIncorrect_answers().get(0));
+                    A2 = new RadioButton(question.getCorrect_answer());
+                    A3 = new RadioButton(question.getIncorrect_answers().get(1));
+                    A4 = new RadioButton(question.getIncorrect_answers().get(2));
+                    break;
+                case 2:
+                    A1 = new RadioButton(question.getIncorrect_answers().get(0));
+                    A2 = new RadioButton(question.getIncorrect_answers().get(1));
+                    A3 = new RadioButton(question.getCorrect_answer());
+                    A4 = new RadioButton(question.getIncorrect_answers().get(2));
+                    break;
+                case 3:
+                    A1 = new RadioButton(question.getIncorrect_answers().get(0));
+                    A2 = new RadioButton(question.getIncorrect_answers().get(1));
+                    A3 = new RadioButton(question.getIncorrect_answers().get(2));
+                    A4 = new RadioButton(question.getCorrect_answer());
+                    break;
+            }
+
+            A1.setFont(new Font("Arial", 18));
+            A2.setFont(new Font("Arial", 18));
+            A3.setFont(new Font("Arial", 18));
+            A4.setFont(new Font("Arial", 18));
+
+            vbox.getChildren().addAll(A1, A2, A3, A4);
+        }
 
         labelVBox.getChildren().addAll(questionNum, questionTitle);
-
         nodeList[0] = labelVBox;
         nodeList[1] = vbox;
         nodeList[2] = submitButton;
-
         return nodeList;
     }
-
 }
