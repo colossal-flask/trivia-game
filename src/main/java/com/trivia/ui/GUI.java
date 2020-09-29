@@ -1,5 +1,7 @@
 package com.trivia.ui;
 
+import com.trivia.model.AnswerRecord;
+import com.trivia.model.TQuestion;
 import com.trivia.model.TriviaSearch;
 import com.trivia.util.CreateAnsweringScene;
 import com.trivia.util.HandleAPIRequests;
@@ -24,6 +26,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import java.util.List;
+
 public class GUI extends Application{
     private HandleAPIRequests APIHandler = new HandleAPIRequests();
 
@@ -34,6 +38,8 @@ public class GUI extends Application{
     private BorderPane borderPane = new BorderPane();
 
     private Scene mainScene;
+
+    private AnswerRecord score;
 
     public void start(Stage mainStage) throws Exception{
 
@@ -64,6 +70,7 @@ public class GUI extends Application{
     private final EventHandler<ActionEvent> randomQEvent = actionEvent -> {
         System.out.println("Fetching question from API.");
         TriviaSearch results = APIHandler.handleRandomRequest();
+        score = new AnswerRecord();
 
         CreateAnsweringScene nodeSwitcher = new CreateAnsweringScene(results.getQuestions().get(0));
         Node[] nodeList = nodeSwitcher.creator();
@@ -84,7 +91,11 @@ public class GUI extends Application{
                 }
 
                 ValidateAnswer validator = new ValidateAnswer(results.getQuestions().get(0), answer);
-                System.out.println(validator.validate());
+                score.addQuestion(results.getQuestions().get(0), validator.validate());
+                List<TQuestion> questionList = results.getQuestions();
+                questionList.remove(0);
+
+                iterateQuestions(questionList);
             }
         });
 
@@ -94,6 +105,48 @@ public class GUI extends Application{
         borderPane.setCenter(nodeList[1]);
         borderPane.setBottom(submitButton);
     };
+
+    public void iterateQuestions(List<TQuestion> qList){
+        if(qList.size() == 0){System.out.println("Done. " + score.getScore());}
+        else {
+            TQuestion question = qList.get(0);
+            qList.remove(0);
+
+            CreateAnsweringScene nodeSwitcher = new CreateAnsweringScene(question);
+            Node[] nodeList = nodeSwitcher.creator();
+
+            VBox vbox = (VBox) nodeList[1];
+            Button submitButton = (Button) nodeList[2];
+
+            submitButton.addEventHandler(ActionEvent.ANY, new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    String answer = "";
+
+                    for (Node radio : vbox.getChildren()){
+                        RadioButton rad = (RadioButton) radio;
+                        if (rad.isSelected()){
+                            System.out.println(rad.getText());
+                            answer = rad.getText();
+                        }
+                    }
+
+                    ValidateAnswer validator = new ValidateAnswer(question, answer);
+                    score.addQuestion(question, validator.validate());
+
+                    iterateQuestions(qList);
+                }
+            });
+
+            BorderPane.setAlignment(nodeList[0], Pos.CENTER);
+            BorderPane.setAlignment(nodeList[2], Pos.CENTER);
+            borderPane.setTop(nodeList[0]);
+            borderPane.setCenter(nodeList[1]);
+            borderPane.setBottom(submitButton);
+        }
+    }
+
+    public void gameFinished(){}
 
     public static void main(String[] args){
         launch(args);
