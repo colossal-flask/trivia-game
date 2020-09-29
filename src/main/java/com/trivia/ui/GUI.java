@@ -41,6 +41,8 @@ public class GUI extends Application{
 
     private AnswerRecord score;
 
+    private Button submitButton;
+
     public void start(Stage mainStage) throws Exception{
 
         configureUI();
@@ -85,7 +87,7 @@ public class GUI extends Application{
             Node[] nodeList = nodeSwitcher.creator();
 
             VBox vbox = (VBox) nodeList[1];
-            Button submitButton = (Button) nodeList[2];
+            submitButton = (Button) nodeList[2];
 
             submitButton.addEventHandler(ActionEvent.ANY, new EventHandler<ActionEvent>() {
                 @Override
@@ -116,8 +118,30 @@ public class GUI extends Application{
     }
 
     public void gameFinished(){
-        borderPane.setTop(welcomeLabel);
-        borderPane.setCenter(quickQHBox);
+        Button restartButton = new Button("Play Again!");
+        Button reviewButton = new Button("View Answers");
+
+        Label endLabel = new Label("Game Over!");
+        Label scoreLabel = new Label(score.getRight() + " correct, " +
+                score.getWrong() + " wrong");
+
+        endLabel.setFont(new Font("Arial", 24));
+        scoreLabel.setFont(new Font("Arial", 18));
+
+        restartButton.setFont(new Font("Arial", 24));
+        reviewButton.setFont(new Font("Arial", 24));
+
+        VBox endVBox = new VBox();
+        endVBox.setPadding(new Insets(20));
+        endVBox.setSpacing(20);
+        endVBox.getChildren().addAll(endLabel, scoreLabel);
+
+        BorderPane.setAlignment(endVBox, Pos.CENTER);
+        BorderPane.setAlignment(restartButton, Pos.CENTER);
+
+        borderPane.setTop(endVBox);
+        borderPane.setCenter(reviewButton);
+        borderPane.getChildren().remove(submitButton);
     }
 
     public static void main(String[] args){
