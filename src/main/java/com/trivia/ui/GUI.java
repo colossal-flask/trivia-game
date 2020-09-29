@@ -72,38 +72,7 @@ public class GUI extends Application{
         TriviaSearch results = APIHandler.handleRandomRequest();
         score = new AnswerRecord();
 
-        CreateAnsweringScene nodeSwitcher = new CreateAnsweringScene(results.getQuestions().get(0));
-        Node[] nodeList = nodeSwitcher.creator();
-
-        VBox vbox = (VBox) nodeList[1];
-        Button submitButton = (Button) nodeList[2];
-        submitButton.addEventHandler(ActionEvent.ANY, new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                String answer = "";
-
-                for (Node radio : vbox.getChildren()){
-                    RadioButton rad = (RadioButton) radio;
-                    if (rad.isSelected()){
-                        System.out.println(rad.getText());
-                        answer = rad.getText();
-                    }
-                }
-
-                ValidateAnswer validator = new ValidateAnswer(results.getQuestions().get(0), answer);
-                score.addQuestion(results.getQuestions().get(0), validator.validate());
-                List<TQuestion> questionList = results.getQuestions();
-                questionList.remove(0);
-
-                iterateQuestions(questionList);
-            }
-        });
-
-        BorderPane.setAlignment(nodeList[0], Pos.CENTER);
-        BorderPane.setAlignment(nodeList[2], Pos.CENTER);
-        borderPane.setTop(nodeList[0]);
-        borderPane.setCenter(nodeList[1]);
-        borderPane.setBottom(submitButton);
+        iterateQuestions(results.getQuestions());
     };
 
     public void iterateQuestions(List<TQuestion> qList){
