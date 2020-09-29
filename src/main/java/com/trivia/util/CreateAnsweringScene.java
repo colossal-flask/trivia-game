@@ -2,6 +2,8 @@ package com.trivia.util;
 
 import com.trivia.model.TQuestion;
 import com.trivia.model.TriviaSearch;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -9,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -20,8 +23,8 @@ import java.util.List;
 
 public class CreateAnsweringScene {
 
-    private Random rand;
-    private TQuestion question;
+    private final Random rand;
+    private final TQuestion question;
 
     public CreateAnsweringScene(TQuestion question){
         this.question = question;
@@ -58,6 +61,11 @@ public class CreateAnsweringScene {
 
             T.setFont(new Font("Arial", 18));
             F.setFont(new Font("Arial", 18));
+
+            final ToggleGroup group = new ToggleGroup();
+
+            T.setToggleGroup(group);
+            F.setToggleGroup(group);
 
             vbox.getChildren().addAll(T, F);
         }
@@ -99,6 +107,12 @@ public class CreateAnsweringScene {
             A2.setFont(new Font("Arial", 18));
             A3.setFont(new Font("Arial", 18));
             A4.setFont(new Font("Arial", 18));
+
+            final ToggleGroup group = new ToggleGroup();
+            A1.setToggleGroup(group);
+            A2.setToggleGroup(group);
+            A3.setToggleGroup(group);
+            A4.setToggleGroup(group);
 
             vbox.getChildren().addAll(A1, A2, A3, A4);
         }
