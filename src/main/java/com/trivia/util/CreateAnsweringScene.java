@@ -17,6 +17,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import org.springframework.web.util.HtmlUtils;
+
 import java.util.Random;
 
 import java.util.List;
@@ -45,6 +47,9 @@ public class CreateAnsweringScene {
 
         String questionNumStr = "Question 1:";
         String questionStr = question.getQuestion();
+        System.out.println(questionStr);
+        questionStr = HtmlUtils.htmlUnescape(questionStr);
+        System.out.println(questionStr);
 
         Label questionNum = new Label(questionNumStr);
         Label questionTitle = new Label(questionStr);

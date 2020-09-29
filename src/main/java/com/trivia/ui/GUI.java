@@ -76,7 +76,7 @@ public class GUI extends Application{
     };
 
     public void iterateQuestions(List<TQuestion> qList){
-        if(qList.size() == 0){System.out.println("Done. " + score.getScore());}
+        if(qList.size() == 0){System.out.println("Done. " + score.getScore()); gameFinished();}
         else {
             TQuestion question = qList.get(0);
             qList.remove(0);
@@ -115,7 +115,10 @@ public class GUI extends Application{
         }
     }
 
-    public void gameFinished(){}
+    public void gameFinished(){
+        borderPane.setTop(welcomeLabel);
+        borderPane.setCenter(quickQHBox);
+    }
 
     public static void main(String[] args){
         launch(args);
