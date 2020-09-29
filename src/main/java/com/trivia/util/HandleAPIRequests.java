@@ -22,11 +22,11 @@ public class HandleAPIRequests {
         timed: true/false
      */
 
-    private Gson gson = new Gson();
+    private final Gson gson = new Gson();
 
     public TriviaSearch handleRandomRequest(){
 
-        String requestURL = "https://opentdb.com/api.php?amount=1&type=boolean";
+        String requestURL = "https://opentdb.com/api.php?amount=10&type=boolean";
 
         try {
             URL triviaRequest = new URL(requestURL);

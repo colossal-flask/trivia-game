@@ -1,20 +1,32 @@
 package com.trivia.ui;
 
+import com.trivia.model.AnswerRecord;
+import com.trivia.model.TQuestion;
 import com.trivia.model.TriviaSearch;
+import com.trivia.util.CreateAnsweringScene;
 import com.trivia.util.HandleAPIRequests;
+import com.trivia.util.ValidateAnswer;
 import javafx.application.Application;
+import javafx.beans.Observable;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+
+import java.util.List;
 
 public class GUI extends Application{
     private HandleAPIRequests APIHandler = new HandleAPIRequests();
@@ -27,12 +39,15 @@ public class GUI extends Application{
 
     private Scene mainScene;
 
+    private AnswerRecord score;
+
     public void start(Stage mainStage) throws Exception{
 
         configureUI();
 
         mainStage.setScene(mainScene);
         mainStage.setTitle("A Game of Trivia!");
+        mainStage.getIcons().add(new Image("question.png"));
         mainStage.show();
     }
 
@@ -52,11 +67,58 @@ public class GUI extends Application{
         mainScene = new Scene(borderPane, 400, 400);
     }
 
-    private EventHandler<ActionEvent> randomQEvent = actionEvent -> {
+    private final EventHandler<ActionEvent> randomQEvent = actionEvent -> {
         System.out.println("Fetching question from API.");
-        TriviaSearch daResults = APIHandler.handleRandomRequest();
-        System.out.println(daResults.getQuestions().get(0).toString());
+        TriviaSearch results = APIHandler.handleRandomRequest();
+        score = new AnswerRecord();
+
+        iterateQuestions(results.getQuestions());
     };
+
+    public void iterateQuestions(List<TQuestion> qList){
+        if(qList.size() == 0){System.out.println("Done. " + score.getScore()); gameFinished();}
+        else {
+            TQuestion question = qList.get(0);
+            qList.remove(0);
+
+            CreateAnsweringScene nodeSwitcher = new CreateAnsweringScene(question);
+            Node[] nodeList = nodeSwitcher.creator();
+
+            VBox vbox = (VBox) nodeList[1];
+            Button submitButton = (Button) nodeList[2];
+
+            submitButton.addEventHandler(ActionEvent.ANY, new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    String answer = "";
+
+                    for (Node radio : vbox.getChildren()){
+                        RadioButton rad = (RadioButton) radio;
+                        if (rad.isSelected()){
+                            System.out.println(rad.getText());
+                            answer = rad.getText();
+                        }
+                    }
+
+                    ValidateAnswer validator = new ValidateAnswer(question, answer);
+                    score.addQuestion(question, validator.validate());
+
+                    iterateQuestions(qList);
+                }
+            });
+
+            BorderPane.setAlignment(nodeList[0], Pos.CENTER);
+            BorderPane.setAlignment(nodeList[2], Pos.CENTER);
+            borderPane.setTop(nodeList[0]);
+            borderPane.setCenter(nodeList[1]);
+            borderPane.setBottom(submitButton);
+        }
+    }
+
+    public void gameFinished(){
+        borderPane.setTop(welcomeLabel);
+        borderPane.setCenter(quickQHBox);
+    }
 
     public static void main(String[] args){
         launch(args);
