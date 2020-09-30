@@ -53,7 +53,7 @@ public class CreateReviewNodes {
 
             vbox.getChildren().add(questionLabel);
 
-            if (questionType.equals("Boolean")){
+            if (questionType.equals("boolean")){
                 Label T = new Label("True");
                 Label F = new Label("False");
 
@@ -71,7 +71,7 @@ public class CreateReviewNodes {
 
                 vbox.getChildren().addAll(T, F);
             }
-            else {
+            else if (questionType.equals("multiple")) {
                 Label correct = new Label(correctAnswer);
                 Label incorrect1 = new Label(wrongAnswers.get(0));
                 Label incorrect2 = new Label(wrongAnswers.get(1));

@@ -182,7 +182,25 @@ public class GUI extends Application{
         CreateReviewNodes reviewer = new CreateReviewNodes(score);
         List<VBox> boxList = reviewer.creator();
 
+        nextReviewButton.addEventHandler(ActionEvent.ANY, new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                boxList.remove(0);
+                reviewIterator(boxList);
+            }
+        });
+
         borderPane.setTop(boxList.get(0));
+    }
+
+    public void reviewIterator(List<VBox> aList){
+        if (aList.size() == 0){
+            //TODO: Implement return to home page.
+            System.out.println("Done.");
+        }
+        else {
+            borderPane.setTop(aList.get(0));
+        }
     }
 
     public static void main(String[] args){
