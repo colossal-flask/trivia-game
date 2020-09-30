@@ -4,6 +4,7 @@ import com.trivia.model.AnswerRecord;
 import com.trivia.model.TQuestion;
 import com.trivia.model.TriviaSearch;
 import com.trivia.util.CreateAnsweringScene;
+import com.trivia.util.CreateReviewNodes;
 import com.trivia.util.HandleAPIRequests;
 import com.trivia.util.ValidateAnswer;
 import javafx.application.Application;
@@ -31,7 +32,7 @@ import java.util.List;
 public class GUI extends Application{
     private HandleAPIRequests APIHandler = new HandleAPIRequests();
 
-    private Button randomQButton = new Button("Give me a random question!");
+    private Button randomQButton = new Button("10 Random Questions!");
     private Label welcomeLabel = new Label("Let's Play Some Trivia!");
 
     private HBox quickQHBox = new HBox();
@@ -42,6 +43,9 @@ public class GUI extends Application{
     private AnswerRecord score;
 
     private Button submitButton;
+    private Button restartButton;
+    private Button reviewButton;
+    private Button nextReviewButton;
 
     public void start(Stage mainStage) throws Exception{
 
@@ -56,6 +60,7 @@ public class GUI extends Application{
     private void configureUI(){
         welcomeLabel.setFont(new Font("Arial", 24));
         randomQButton.addEventHandler(ActionEvent.ANY, randomQEvent);
+        randomQButton.setFont(new Font("Arial", 20));
 
         quickQHBox.setAlignment(Pos.TOP_CENTER);
         quickQHBox.getChildren().add(randomQButton);
@@ -118,8 +123,8 @@ public class GUI extends Application{
     }
 
     public void gameFinished(){
-        Button restartButton = new Button("Play Again!");
-        Button reviewButton = new Button("View Answers");
+        restartButton = new Button("Play Again!");
+        reviewButton = new Button("View Answers");
 
         Label endLabel = new Label("Game Over!");
         Label scoreLabel = new Label(score.getRight() + " correct, " +
@@ -135,13 +140,49 @@ public class GUI extends Application{
         endVBox.setPadding(new Insets(20));
         endVBox.setSpacing(20);
         endVBox.getChildren().addAll(endLabel, scoreLabel);
+        endVBox.setAlignment(Pos.CENTER);
 
-        BorderPane.setAlignment(endVBox, Pos.CENTER);
         BorderPane.setAlignment(restartButton, Pos.CENTER);
+        BorderPane.setAlignment(reviewButton, Pos.BOTTOM_CENTER);
+
+        restartButton.addEventHandler(ActionEvent.ANY, new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                restartGame();
+            }
+        });
+
+        reviewButton.addEventHandler(ActionEvent.ANY, new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                reviewAnswers();
+            }
+        });
 
         borderPane.setTop(endVBox);
-        borderPane.setCenter(reviewButton);
-        borderPane.getChildren().remove(submitButton);
+        borderPane.setCenter(restartButton);
+        borderPane.setBottom(reviewButton);
+    }
+
+    public void restartGame(){
+        borderPane.setTop(welcomeLabel);
+        borderPane.setCenter(quickQHBox);
+        borderPane.getChildren().remove(reviewButton);
+    }
+
+    public void reviewAnswers(){
+        nextReviewButton = new Button("Next Question");
+        nextReviewButton.setFont(new Font("Arial", 18));
+
+        borderPane.getChildren().remove(reviewButton);
+        borderPane.getChildren().remove(restartButton);
+        BorderPane.setAlignment(nextReviewButton, Pos.BOTTOM_CENTER);
+        borderPane.setBottom(nextReviewButton);
+
+        CreateReviewNodes reviewer = new CreateReviewNodes(score);
+        List<VBox> boxList = reviewer.creator();
+
+        borderPane.setTop(boxList.get(0));
     }
 
     public static void main(String[] args){
