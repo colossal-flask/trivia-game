@@ -90,6 +90,7 @@ public class CreateReviewNodes {
                 vbox.getChildren().addAll(correct, incorrect1, incorrect2, incorrect3);
             }
             boxList.add(vbox);
+            i++;
         }
         return boxList;
     }

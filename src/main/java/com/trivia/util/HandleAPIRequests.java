@@ -26,7 +26,7 @@ public class HandleAPIRequests {
 
     public TriviaSearch handleRandomRequest(){
 
-        String requestURL = "https://opentdb.com/api.php?amount=3";
+        String requestURL = "https://opentdb.com/api.php?amount=10";
 
         try {
             URL triviaRequest = new URL(requestURL);

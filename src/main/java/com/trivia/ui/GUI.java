@@ -78,11 +78,62 @@ public class GUI extends Application{
         System.out.println("Fetching question from API.");
         TriviaSearch results = APIHandler.handleRandomRequest();
         score = new AnswerRecord();
+        List<TQuestion> qList = results.getQuestions();
+        CreateAnsweringScene questionGiver = new CreateAnsweringScene(qList);
 
-        iterateQuestions(results.getQuestions());
+        submitButton = new Button("Submit");
+        submitButton.setFont(new Font("Arial", 24));
+
+        List<VBox> VBoxList = questionGiver.creator();
+        borderPane.getChildren().remove(quickQHBox);
+        BorderPane.setAlignment(submitButton, Pos.BOTTOM_CENTER);
+        borderPane.setBottom(submitButton);
+
+        submitButton.addEventHandler(ActionEvent.ANY, new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                String answer = "";
+
+                TQuestion question = qList.get(0);
+                List<Node> radioSubList;
+                if (question.getType().equals("boolean")) {
+                    radioSubList = VBoxList.get(0).getChildren().subList(1, 3);
+                }
+                else {
+                    radioSubList = VBoxList.get(0).getChildren().subList(1, 5);
+                }
+
+                for (Node radio : radioSubList) {
+                    RadioButton rad = (RadioButton) radio;
+                    if (rad.isSelected()) {
+                        System.out.println(rad.getText());
+                        answer = rad.getText();
+                    }
+                }
+
+                ValidateAnswer validator = new ValidateAnswer(question, answer);
+                score.addQuestion(question, validator.validate());
+                VBoxList.remove(0);
+                qList.remove(0);
+
+                iterateQuestions(VBoxList);
+            }
+        });
+
+        iterateQuestions(VBoxList);
     };
 
-    public void iterateQuestions(List<TQuestion> qList){
+    public void iterateQuestions(List<VBox> vList){
+        if (vList.size() == 0){
+            System.out.println("Done.");
+            gameFinished();
+        }
+        else {
+            borderPane.setTop(vList.get(0));
+        }
+    }
+
+    /*public void iterateQuestions(List<TQuestion> qList){
         if(qList.size() == 0){System.out.println("Done. " + score.getScore()); gameFinished();}
         else {
             TQuestion question = qList.get(0);
@@ -120,7 +171,7 @@ public class GUI extends Application{
             borderPane.setCenter(nodeList[1]);
             borderPane.setBottom(submitButton);
         }
-    }
+    }*/
 
     public void gameFinished(){
         restartButton = new Button("Play Again!");
@@ -195,8 +246,13 @@ public class GUI extends Application{
 
     public void reviewIterator(List<VBox> aList){
         if (aList.size() == 0){
-            //TODO: Implement return to home page.
             System.out.println("Done.");
+            borderPane.getChildren().remove(nextReviewButton);
+            restartGame();
+        }
+        else if (aList.size() == 1){
+            nextReviewButton.setText("Play Again?");
+            borderPane.setTop(aList.get(0));
         }
         else {
             borderPane.setTop(aList.get(0));
