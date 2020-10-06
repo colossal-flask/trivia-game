@@ -112,7 +112,7 @@ public class GUI extends Application{
                 }
 
                 ValidateAnswer validator = new ValidateAnswer(question, answer);
-                score.addQuestion(question, validator.validate());
+                score.addQuestion(question, validator.validate(), answer);
                 VBoxList.remove(0);
                 qList.remove(0);
 

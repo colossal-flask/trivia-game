@@ -25,14 +25,14 @@ public class AnswerRecord {
 
    public int getWrong(){ return wrong;}
 
-   public void addQuestion(TQuestion nQuestion, boolean correct){
+   public void addQuestion(TQuestion nQuestion, boolean correct, String userAnswer){
        String str;
        if (correct){
            str = "";
            score++;
            right++;
        } else {
-           str = nQuestion.getCorrect_answer();
+           str = userAnswer;
            wrong++;
        }
 

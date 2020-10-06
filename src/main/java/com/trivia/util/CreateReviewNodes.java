@@ -4,6 +4,9 @@ import com.trivia.model.AnswerRecord;
 import com.trivia.model.TQuestion;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -31,6 +34,7 @@ public class CreateReviewNodes {
             questionTitle = HtmlUtils.htmlUnescape(questionTitle);
             String questionType = entry.getKey().getType();
             String correctAnswer = entry.getKey().getCorrect_answer();
+            String userAnswer = entry.getValue();
             List<String> wrongAnswers = entry.getKey().getIncorrect_answers();
 
             boolean userCorrect;
@@ -50,6 +54,9 @@ public class CreateReviewNodes {
 
             vbox.getChildren().add(questionLabel);
 
+            BackgroundFill correctFill = new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY);
+            BackgroundFill incorrectFill = new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY);
+
             if (questionType.equals("boolean")){
                 Label T = new Label("True");
                 Label F = new Label("False");
@@ -60,10 +67,26 @@ public class CreateReviewNodes {
                 if (correctAnswer.equals("True")){
                     T.setTextFill(Color.GREEN);
                     F.setTextFill(Color.RED);
+                    if (userCorrect){
+                        T.setTextFill(Color.WHITE);
+                        T.setBackground(new Background(correctFill));
+                    }
+                    else {
+                        F.setTextFill(Color.WHITE);
+                        F.setBackground(new Background(incorrectFill));
+                    }
                 }
                 else {
                     T.setTextFill(Color.RED);
                     F.setTextFill(Color.GREEN);
+                    if (userCorrect){
+                        F.setBackground(new Background(correctFill));
+                        F.setTextFill(Color.WHITE);
+                    }
+                    else {
+                        T.setBackground(new Background(incorrectFill));
+                        T.setTextFill(Color.WHITE);
+                    }
                 }
 
                 vbox.getChildren().addAll(T, F);
@@ -83,6 +106,24 @@ public class CreateReviewNodes {
                 incorrect1.setTextFill(Color.RED);
                 incorrect2.setTextFill(Color.RED);
                 incorrect3.setTextFill(Color.RED);
+
+                List<Label> incorrectLabels = new ArrayList<>();
+                incorrectLabels.add(incorrect1);
+                incorrectLabels.add(incorrect2);
+                incorrectLabels.add(incorrect3);
+
+                if (userCorrect){
+                    correct.setBackground(new Background(correctFill));
+                    correct.setTextFill(Color.WHITE);
+                }
+                else {
+                    for (Label label : incorrectLabels){
+                        if (label.getText().equals(userAnswer)){
+                            label.setBackground(new Background(incorrectFill));
+                            label.setTextFill(Color.WHITE);
+                        }
+                    }
+                }
 
                 vbox.getChildren().addAll(correct, incorrect1, incorrect2, incorrect3);
             }
