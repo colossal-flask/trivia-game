@@ -1,22 +1,23 @@
 package com.trivia.model;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class AnswerRecord {
 
-   HashMap<TQuestion, String> questions;
+   LinkedHashMap<TQuestion, String> questions;
    int score;
    int right;
    int wrong;
 
    public AnswerRecord(){
-       this.questions = new HashMap<>();
+       this.questions = new LinkedHashMap<>();
        this.score = 0;
        this.right = 0;
        this.wrong = 0;
    }
 
-   public HashMap<TQuestion, String> getQuestions(){ return questions;}
+   public LinkedHashMap<TQuestion, String> getQuestions(){ return questions;}
 
    public int getScore(){ return score;}
 

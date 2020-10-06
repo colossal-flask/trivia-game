@@ -9,10 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import org.springframework.web.util.HtmlUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CreateReviewNodes {
 
@@ -25,7 +22,7 @@ public class CreateReviewNodes {
     public List<VBox> creator(){
 
         List<VBox> boxList = new ArrayList<>();
-        HashMap<TQuestion, String> ans = answers.getQuestions();
+        LinkedHashMap<TQuestion, String> ans = answers.getQuestions();
 
         int i = 1;
 
