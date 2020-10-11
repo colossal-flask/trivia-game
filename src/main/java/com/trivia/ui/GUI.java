@@ -4,6 +4,7 @@ import com.trivia.model.AnswerRecord;
 import com.trivia.model.TQuestion;
 import com.trivia.model.TriviaSearch;
 import com.trivia.util.CreateAnsweringScene;
+import com.trivia.util.CreateReviewNodes;
 import com.trivia.util.HandleAPIRequests;
 import com.trivia.util.ValidateAnswer;
 import javafx.application.Application;
@@ -31,7 +32,7 @@ import java.util.List;
 public class GUI extends Application{
     private HandleAPIRequests APIHandler = new HandleAPIRequests();
 
-    private Button randomQButton = new Button("Give me a random question!");
+    private Button randomQButton = new Button("10 Random Questions!");
     private Label welcomeLabel = new Label("Let's Play Some Trivia!");
 
     private HBox quickQHBox = new HBox();
@@ -40,6 +41,11 @@ public class GUI extends Application{
     private Scene mainScene;
 
     private AnswerRecord score;
+
+    private Button submitButton;
+    private Button restartButton;
+    private Button reviewButton;
+    private Button nextReviewButton;
 
     public void start(Stage mainStage) throws Exception{
 
@@ -54,6 +60,7 @@ public class GUI extends Application{
     private void configureUI(){
         welcomeLabel.setFont(new Font("Arial", 24));
         randomQButton.addEventHandler(ActionEvent.ANY, randomQEvent);
+        randomQButton.setFont(new Font("Arial", 20));
 
         quickQHBox.setAlignment(Pos.TOP_CENTER);
         quickQHBox.getChildren().add(randomQButton);
@@ -71,11 +78,62 @@ public class GUI extends Application{
         System.out.println("Fetching question from API.");
         TriviaSearch results = APIHandler.handleRandomRequest();
         score = new AnswerRecord();
+        List<TQuestion> qList = results.getQuestions();
+        CreateAnsweringScene questionGiver = new CreateAnsweringScene(qList);
 
-        iterateQuestions(results.getQuestions());
+        submitButton = new Button("Submit");
+        submitButton.setFont(new Font("Arial", 24));
+
+        List<VBox> VBoxList = questionGiver.creator();
+        borderPane.getChildren().remove(quickQHBox);
+        BorderPane.setAlignment(submitButton, Pos.BOTTOM_CENTER);
+        borderPane.setBottom(submitButton);
+
+        submitButton.addEventHandler(ActionEvent.ANY, new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                String answer = "";
+
+                TQuestion question = qList.get(0);
+                List<Node> radioSubList;
+                if (question.getType().equals("boolean")) {
+                    radioSubList = VBoxList.get(0).getChildren().subList(1, 3);
+                }
+                else {
+                    radioSubList = VBoxList.get(0).getChildren().subList(1, 5);
+                }
+
+                for (Node radio : radioSubList) {
+                    RadioButton rad = (RadioButton) radio;
+                    if (rad.isSelected()) {
+                        System.out.println(rad.getText());
+                        answer = rad.getText();
+                    }
+                }
+
+                ValidateAnswer validator = new ValidateAnswer(question, answer);
+                score.addQuestion(question, validator.validate(), answer);
+                VBoxList.remove(0);
+                qList.remove(0);
+
+                iterateQuestions(VBoxList);
+            }
+        });
+
+        iterateQuestions(VBoxList);
     };
 
-    public void iterateQuestions(List<TQuestion> qList){
+    public void iterateQuestions(List<VBox> vList){
+        if (vList.size() == 0){
+            System.out.println("Done.");
+            gameFinished();
+        }
+        else {
+            borderPane.setTop(vList.get(0));
+        }
+    }
+
+    /*public void iterateQuestions(List<TQuestion> qList){
         if(qList.size() == 0){System.out.println("Done. " + score.getScore()); gameFinished();}
         else {
             TQuestion question = qList.get(0);
@@ -85,7 +143,7 @@ public class GUI extends Application{
             Node[] nodeList = nodeSwitcher.creator();
 
             VBox vbox = (VBox) nodeList[1];
-            Button submitButton = (Button) nodeList[2];
+            submitButton = (Button) nodeList[2];
 
             submitButton.addEventHandler(ActionEvent.ANY, new EventHandler<ActionEvent>() {
                 @Override
@@ -113,11 +171,92 @@ public class GUI extends Application{
             borderPane.setCenter(nodeList[1]);
             borderPane.setBottom(submitButton);
         }
-    }
+    }*/
 
     public void gameFinished(){
+        restartButton = new Button("Play Again!");
+        reviewButton = new Button("View Answers");
+
+        Label endLabel = new Label("Game Over!");
+        Label scoreLabel = new Label(score.getRight() + " correct, " +
+                score.getWrong() + " wrong");
+
+        endLabel.setFont(new Font("Arial", 24));
+        scoreLabel.setFont(new Font("Arial", 18));
+
+        restartButton.setFont(new Font("Arial", 24));
+        reviewButton.setFont(new Font("Arial", 24));
+
+        VBox endVBox = new VBox();
+        endVBox.setPadding(new Insets(20));
+        endVBox.setSpacing(20);
+        endVBox.getChildren().addAll(endLabel, scoreLabel);
+        endVBox.setAlignment(Pos.CENTER);
+
+        BorderPane.setAlignment(restartButton, Pos.CENTER);
+        BorderPane.setAlignment(reviewButton, Pos.BOTTOM_CENTER);
+
+        restartButton.addEventHandler(ActionEvent.ANY, new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                restartGame();
+            }
+        });
+
+        reviewButton.addEventHandler(ActionEvent.ANY, new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                reviewAnswers();
+            }
+        });
+
+        borderPane.setTop(endVBox);
+        borderPane.setCenter(restartButton);
+        borderPane.setBottom(reviewButton);
+    }
+
+    public void restartGame(){
         borderPane.setTop(welcomeLabel);
         borderPane.setCenter(quickQHBox);
+        borderPane.getChildren().remove(reviewButton);
+    }
+
+    public void reviewAnswers(){
+        nextReviewButton = new Button("Next Question");
+        nextReviewButton.setFont(new Font("Arial", 18));
+
+        borderPane.getChildren().remove(reviewButton);
+        borderPane.getChildren().remove(restartButton);
+        BorderPane.setAlignment(nextReviewButton, Pos.BOTTOM_CENTER);
+        borderPane.setBottom(nextReviewButton);
+
+        CreateReviewNodes reviewer = new CreateReviewNodes(score);
+        List<VBox> boxList = reviewer.creator();
+
+        nextReviewButton.addEventHandler(ActionEvent.ANY, new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                boxList.remove(0);
+                reviewIterator(boxList);
+            }
+        });
+
+        borderPane.setTop(boxList.get(0));
+    }
+
+    public void reviewIterator(List<VBox> aList){
+        if (aList.size() == 0){
+            System.out.println("Done.");
+            borderPane.getChildren().remove(nextReviewButton);
+            restartGame();
+        }
+        else if (aList.size() == 1){
+            nextReviewButton.setText("Play Again?");
+            borderPane.setTop(aList.get(0));
+        }
+        else {
+            borderPane.setTop(aList.get(0));
+        }
     }
 
     public static void main(String[] args){
