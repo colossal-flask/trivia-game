@@ -9,16 +9,15 @@ import com.trivia.util.HandleAPIRequests;
 import com.trivia.util.ValidateAnswer;
 import javafx.application.Application;
 import javafx.beans.Observable;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
@@ -33,6 +32,7 @@ public class GUI extends Application{
     private HandleAPIRequests APIHandler = new HandleAPIRequests();
 
     private Button randomQButton = new Button("10 Random Questions!");
+    private Button customQButton = new Button("Configure Questions");
     private Label welcomeLabel = new Label("Let's Play Some Trivia!");
 
     private HBox quickQHBox = new HBox();
@@ -62,16 +62,39 @@ public class GUI extends Application{
         randomQButton.addEventHandler(ActionEvent.ANY, randomQEvent);
         randomQButton.setFont(new Font("Arial", 20));
 
+        customQButton.setFont(new Font("Arial", 20));
+        customQButton.addEventHandler(ActionEvent.ANY, new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                CustomQuestionNodes customHandler = new CustomQuestionNodes();
+                Node[] nodes = customHandler.generate();
+
+                BorderPane.setAlignment(nodes[0], Pos.TOP_CENTER);
+                BorderPane.setAlignment(nodes[1], Pos.CENTER);
+                BorderPane.setAlignment(nodes[2], Pos.BOTTOM_CENTER);
+
+                borderPane.setTop(nodes[0]);
+                borderPane.setCenter(nodes[1]);
+                borderPane.setBottom(nodes[2]);
+            }
+        });
+        customQButton.setAlignment(Pos.BOTTOM_CENTER);
+
         quickQHBox.setAlignment(Pos.TOP_CENTER);
         quickQHBox.getChildren().add(randomQButton);
 
         BorderPane.setAlignment(welcomeLabel, Pos.CENTER);
         BorderPane.setMargin(welcomeLabel, new Insets(12,12,12,12));
+        BorderPane.setAlignment(customQButton, Pos.CENTER);
+
+        CustomQuestionNodes customHandler = new CustomQuestionNodes();
+        Node[] nodes = customHandler.generate();
 
         borderPane.setTop(welcomeLabel);
         borderPane.setCenter(quickQHBox);
+        borderPane.setBottom(customQButton);
 
-        mainScene = new Scene(borderPane, 400, 400);
+        mainScene = new Scene(borderPane, 400, 500);
     }
 
     private final EventHandler<ActionEvent> randomQEvent = actionEvent -> {
