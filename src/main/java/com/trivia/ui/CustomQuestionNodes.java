@@ -19,6 +19,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CustomQuestionNodes {
 
@@ -30,7 +31,7 @@ public class CustomQuestionNodes {
     public CustomQuestionNodes(){
 
         ObservableList<String> numberOptions = FXCollections.observableArrayList(
-                "1", "5", "10", "15", "20", "25"
+                "5", "10", "15", "20", "25"
         );
 
         ObservableList<String> categoryOptions = FXCollections.observableArrayList(
@@ -106,7 +107,7 @@ public class CustomQuestionNodes {
         Button submitButton = new Button("Play Custom Game!");
         submitButton.setFont(new Font("Arial", 20));
         submitButton.setAlignment(Pos.BOTTOM_CENTER);
-        submitButton.addEventHandler(ActionEvent.ANY, submit);
+        //submitButton.addEventHandler(ActionEvent.ANY, submit);
 
         GridPane pane = new GridPane();
         pane.setPadding(new Insets(10, 10, 10, 10));
@@ -126,25 +127,13 @@ public class CustomQuestionNodes {
         return customVbox;
     }
 
-    private final EventHandler<ActionEvent> submit = actionEvent -> {
-        System.out.println(questionNum.getValue());
-        System.out.println(category.getValue());
-        System.out.println(difficulty.getValue());
-        System.out.println(type.getValue());
-
-        String questionNumStr = (String) questionNum.getValue();
-        String categoryStr = (String) category.getValue();
-        String difficultyStr = (String) difficulty.getValue();
-        String typeStr = (String) type.getValue();
-
-        ArrayList<String> queries = new ArrayList<>();
-        queries.add(questionNumStr);
-        queries.add(categoryStr);
-        queries.add(difficultyStr);
-        queries.add(typeStr);
-
-        HandleAPIRequests APIHandler = new HandleAPIRequests();
-        APIHandler.handleCustomRequests(queries, false);
-    };
+    public ArrayList<ComboBox> getResults(){
+        ArrayList<ComboBox> results = new ArrayList();
+        results.add(questionNum);
+        results.add(category);
+        results.add(difficulty);
+        results.add(type);
+        return results;
+    }
 
 }

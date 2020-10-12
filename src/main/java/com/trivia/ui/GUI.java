@@ -26,9 +26,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GUI extends Application{
+    private TriviaSearch results;
     private HandleAPIRequests APIHandler = new HandleAPIRequests();
 
     private Button randomQButton = new Button("10 Random Questions!");
@@ -42,6 +44,8 @@ public class GUI extends Application{
     private Scene mainScene;
 
     private AnswerRecord score;
+
+    private List<ComboBox> comboBoxList;
 
     private Button submitButton;
     private Button restartButton;
@@ -74,6 +78,9 @@ public class GUI extends Application{
 
         CustomQuestionNodes customHandler = new CustomQuestionNodes();
         customBox = customHandler.generate();
+        comboBoxList = customHandler.getResults();
+        Button customButton = (Button) customBox.getChildren().get(2);
+        customButton.addEventHandler(ActionEvent.ANY, customQEvent);
 
         borderPane.setTop(headerVBox);
         borderPane.setCenter(customBox);
@@ -83,7 +90,32 @@ public class GUI extends Application{
 
     private final EventHandler<ActionEvent> randomQEvent = actionEvent -> {
         System.out.println("Fetching question from API.");
-        TriviaSearch results = APIHandler.handleRandomRequest();
+        results = APIHandler.handleRandomRequest();
+        mainGame();
+    };
+
+    private final EventHandler<ActionEvent> customQEvent = actionEvent -> {
+        ComboBox questionNum = comboBoxList.get(0);
+        ComboBox category = comboBoxList.get(1);
+        ComboBox difficulty = comboBoxList.get(2);
+        ComboBox type = comboBoxList.get(3);
+
+        String questionNumStr = (String) questionNum.getValue();
+        String categoryStr = (String) category.getValue();
+        String difficultyStr = (String) difficulty.getValue();
+        String typeStr = (String) type.getValue();
+
+        ArrayList<String> queries = new ArrayList<>();
+        queries.add(questionNumStr);
+        queries.add(categoryStr);
+        queries.add(difficultyStr);
+        queries.add(typeStr);
+
+        results = APIHandler.handleCustomRequests(queries, false);
+        mainGame();
+    };
+
+    public void mainGame(){
         score = new AnswerRecord();
         List<TQuestion> qList = results.getQuestions();
         CreateAnsweringScene questionGiver = new CreateAnsweringScene(qList);

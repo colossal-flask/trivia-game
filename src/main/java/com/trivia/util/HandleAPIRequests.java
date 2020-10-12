@@ -35,28 +35,6 @@ public class HandleAPIRequests {
         return handleRequest();
     }
 
-    public TriviaSearch handleRequest() {
-
-        try {
-            URL triviaRequest = new URL(requestURL);
-
-            HttpsURLConnection connection = (HttpsURLConnection) triviaRequest.openConnection();
-            connection.connect();
-
-            InputStream input = connection.getInputStream();
-            int responseCode = connection.getResponseCode();
-
-            InputStreamReader inputReader = new InputStreamReader(input);
-            BufferedReader reader = new BufferedReader(inputReader);
-            TriviaSearch results = gson.fromJson(reader, TriviaSearch.class);
-
-            return results;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public TriviaSearch handleCustomRequests(ArrayList<String> req, boolean timed) {
 
         List<String> categoryOptions = Arrays.asList(
@@ -67,7 +45,7 @@ public class HandleAPIRequests {
                 "Cartoons & Animations"
         );
 
-        String requestURL = "https://opentdb.com/api.php?";
+        requestURL = "https://opentdb.com/api.php?";
         System.out.println("Handler invoked.");
 
         requestURL = requestURL + "amount=" + req.get(0);
@@ -94,5 +72,27 @@ public class HandleAPIRequests {
         System.out.println(requestURL);
 
         return handleRequest();
+    }
+
+    public TriviaSearch handleRequest() {
+
+        try {
+            URL triviaRequest = new URL(requestURL);
+
+            HttpsURLConnection connection = (HttpsURLConnection) triviaRequest.openConnection();
+            connection.connect();
+
+            InputStream input = connection.getInputStream();
+            int responseCode = connection.getResponseCode();
+
+            InputStreamReader inputReader = new InputStreamReader(input);
+            BufferedReader reader = new BufferedReader(inputReader);
+            TriviaSearch results = gson.fromJson(reader, TriviaSearch.class);
+
+            return results;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
