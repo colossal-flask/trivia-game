@@ -37,6 +37,7 @@ public class GUI extends Application{
 
     private HBox quickQHBox = new HBox();
     private BorderPane borderPane = new BorderPane();
+    private VBox headerVBox = new VBox();
 
     private Scene mainScene;
 
@@ -83,6 +84,9 @@ public class GUI extends Application{
         quickQHBox.setAlignment(Pos.TOP_CENTER);
         quickQHBox.getChildren().add(randomQButton);
 
+        headerVBox.setAlignment(Pos.TOP_CENTER);
+        headerVBox.getChildren().addAll(welcomeLabel, new Label(" "), randomQButton);
+
         BorderPane.setAlignment(welcomeLabel, Pos.CENTER);
         BorderPane.setMargin(welcomeLabel, new Insets(12,12,12,12));
         BorderPane.setAlignment(customQButton, Pos.CENTER);
@@ -90,11 +94,15 @@ public class GUI extends Application{
         CustomQuestionNodes customHandler = new CustomQuestionNodes();
         Node[] nodes = customHandler.generate();
 
-        borderPane.setTop(welcomeLabel);
-        borderPane.setCenter(quickQHBox);
-        borderPane.setBottom(customQButton);
+        VBox customVbox = new VBox();
+        customVbox.setSpacing(20);
+        customVbox.setAlignment(Pos.CENTER);
+        customVbox.getChildren().addAll(nodes[0], nodes[1], nodes[2]);
 
-        mainScene = new Scene(borderPane, 400, 500);
+        borderPane.setTop(headerVBox);
+        borderPane.setCenter(customVbox);
+
+        mainScene = new Scene(borderPane, 400, 400);
     }
 
     private final EventHandler<ActionEvent> randomQEvent = actionEvent -> {

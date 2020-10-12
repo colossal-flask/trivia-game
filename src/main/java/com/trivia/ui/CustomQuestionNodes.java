@@ -9,6 +9,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -53,7 +55,7 @@ public class CustomQuestionNodes {
         Node[] nodeList = new Node[3];
 
         Label titleLabel = new Label("Customize Your Questions");
-        titleLabel.setFont(new Font("Arial", 20));
+        titleLabel.setFont(new Font("Arial", 24));
         titleLabel.setAlignment(Pos.CENTER);
 
         questionNum.setMaxWidth(200);
@@ -92,12 +94,22 @@ public class CustomQuestionNodes {
         vbox.setSpacing(40);
         vbox.getChildren().addAll(questionNumBox, categoryBox, difficultyBox, typeBox);
 
-        Button submitButton = new Button("Submit");
+        Button submitButton = new Button("Play Custom Game!");
         submitButton.setFont(new Font("Arial", 20));
         submitButton.setAlignment(Pos.BOTTOM_CENTER);
 
+        GridPane pane = new GridPane();
+        pane.setPadding(new Insets(10, 10, 10, 10));
+        pane.setAlignment(Pos.CENTER);
+        pane.setVgap(5);
+        pane.setHgap(5);
+        pane.add(questionNumBox, 0, 0);
+        pane.add(categoryBox, 0, 1);
+        pane.add(difficultyBox, 1, 0);
+        pane.add(typeBox, 1, 1);
+
         nodeList[0] = titleLabel;
-        nodeList[1] = vbox;
+        nodeList[1] = pane;
         nodeList[2] = submitButton;
 
         return nodeList;
