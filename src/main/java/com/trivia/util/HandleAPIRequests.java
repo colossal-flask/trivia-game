@@ -28,10 +28,14 @@ public class HandleAPIRequests {
      */
 
     private final Gson gson = new Gson();
+    private String requestURL;
 
-    public TriviaSearch handleRandomRequest(){
+    public TriviaSearch handleRandomRequest() {
+        requestURL = "https://opentdb.com/api.php?amount=10";
+        return handleRequest();
+    }
 
-        String requestURL = "https://opentdb.com/api.php?amount=10";
+    public TriviaSearch handleRequest() {
 
         try {
             URL triviaRequest = new URL(requestURL);
@@ -47,14 +51,13 @@ public class HandleAPIRequests {
             TriviaSearch results = gson.fromJson(reader, TriviaSearch.class);
 
             return results;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public TriviaSearch handleCustomRequests(ArrayList<String> req, boolean timed){
+    public TriviaSearch handleCustomRequests(ArrayList<String> req, boolean timed) {
 
         List<String> categoryOptions = Arrays.asList(
                 "Any", "General Knowledge", "Books", "Film", "Music", "Musicals & Theatres",
@@ -69,47 +72,27 @@ public class HandleAPIRequests {
 
         requestURL = requestURL + "amount=" + req.get(0);
 
-        if (!req.get(1).equals("Any")){
+        if (!req.get(1).equals("Any")) {
             String categoryNum = Integer.toString(8 + categoryOptions.indexOf(req.get(1)));
             requestURL = requestURL + "&category=" + categoryNum;
             System.out.println(categoryNum);
             System.out.println(requestURL);
         }
 
-        if (!req.get(2).equals("Any")){
+        if (!req.get(2).equals("Any")) {
             requestURL = requestURL + "&difficulty=" + req.get(2).toLowerCase();
         }
 
-        if (!req.get(3).equals("Any")){
-            if (req.get(3).equals("Multiple Choice")){
+        if (!req.get(3).equals("Any")) {
+            if (req.get(3).equals("Multiple Choice")) {
                 requestURL = requestURL + "&type=multiple";
-            }
-            else if (req.get(3).equals("True/False")){
+            } else if (req.get(3).equals("True/False")) {
                 requestURL = requestURL + "&type=boolean";
             }
         }
 
         System.out.println(requestURL);
 
-        try {
-            URL triviaRequest = new URL(requestURL);
-
-            HttpsURLConnection connection = (HttpsURLConnection) triviaRequest.openConnection();
-            connection.connect();
-
-            InputStream input = connection.getInputStream();
-            int responseCode = connection.getResponseCode();
-
-            InputStreamReader inputReader = new InputStreamReader(input);
-            BufferedReader reader = new BufferedReader(inputReader);
-            TriviaSearch results = gson.fromJson(reader, TriviaSearch.class);
-
-            return results;
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return handleRequest();
     }
-
 }
