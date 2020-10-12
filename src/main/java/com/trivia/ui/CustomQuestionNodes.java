@@ -1,7 +1,10 @@
 package com.trivia.ui;
 
+import com.trivia.util.HandleAPIRequests;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -14,6 +17,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+
+import java.util.ArrayList;
 
 public class CustomQuestionNodes {
 
@@ -51,8 +56,7 @@ public class CustomQuestionNodes {
         this.questionNum = new ComboBox(numberOptions);
     }
 
-    public Node[] generate(){
-        Node[] nodeList = new Node[3];
+    public VBox generate(){
 
         Label titleLabel = new Label("Customize Your Questions");
         titleLabel.setFont(new Font("Arial", 24));
@@ -62,6 +66,11 @@ public class CustomQuestionNodes {
         category.setMaxWidth(200);
         difficulty.setMaxWidth(200);
         type.setMaxWidth(200);
+
+        questionNum.getSelectionModel().selectFirst();
+        category.getSelectionModel().selectFirst();
+        difficulty.getSelectionModel().selectFirst();
+        type.getSelectionModel().selectFirst();
 
         VBox questionNumBox = new VBox();
         VBox categoryBox = new VBox();
@@ -97,6 +106,7 @@ public class CustomQuestionNodes {
         Button submitButton = new Button("Play Custom Game!");
         submitButton.setFont(new Font("Arial", 20));
         submitButton.setAlignment(Pos.BOTTOM_CENTER);
+        submitButton.addEventHandler(ActionEvent.ANY, submit);
 
         GridPane pane = new GridPane();
         pane.setPadding(new Insets(10, 10, 10, 10));
@@ -108,11 +118,33 @@ public class CustomQuestionNodes {
         pane.add(difficultyBox, 1, 0);
         pane.add(typeBox, 1, 1);
 
-        nodeList[0] = titleLabel;
-        nodeList[1] = pane;
-        nodeList[2] = submitButton;
+        VBox customVbox = new VBox();
+        customVbox.setSpacing(20);
+        customVbox.setAlignment(Pos.CENTER);
+        customVbox.getChildren().addAll(titleLabel, pane, submitButton);
 
-        return nodeList;
+        return customVbox;
     }
+
+    private final EventHandler<ActionEvent> submit = actionEvent -> {
+        System.out.println(questionNum.getValue());
+        System.out.println(category.getValue());
+        System.out.println(difficulty.getValue());
+        System.out.println(type.getValue());
+
+        String questionNumStr = (String) questionNum.getValue();
+        String categoryStr = (String) category.getValue();
+        String difficultyStr = (String) difficulty.getValue();
+        String typeStr = (String) type.getValue();
+
+        ArrayList<String> queries = new ArrayList<>();
+        queries.add(questionNumStr);
+        queries.add(categoryStr);
+        queries.add(difficultyStr);
+        queries.add(typeStr);
+
+        HandleAPIRequests APIHandler = new HandleAPIRequests();
+        APIHandler.handleCustomRequests(queries, false);
+    };
 
 }

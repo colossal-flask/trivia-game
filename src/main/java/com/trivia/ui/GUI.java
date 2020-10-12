@@ -32,12 +32,12 @@ public class GUI extends Application{
     private HandleAPIRequests APIHandler = new HandleAPIRequests();
 
     private Button randomQButton = new Button("10 Random Questions!");
-    private Button customQButton = new Button("Configure Questions");
     private Label welcomeLabel = new Label("Let's Play Some Trivia!");
 
     private HBox quickQHBox = new HBox();
     private BorderPane borderPane = new BorderPane();
     private VBox headerVBox = new VBox();
+    private VBox customBox;
 
     private Scene mainScene;
 
@@ -63,24 +63,6 @@ public class GUI extends Application{
         randomQButton.addEventHandler(ActionEvent.ANY, randomQEvent);
         randomQButton.setFont(new Font("Arial", 20));
 
-        customQButton.setFont(new Font("Arial", 20));
-        customQButton.addEventHandler(ActionEvent.ANY, new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                CustomQuestionNodes customHandler = new CustomQuestionNodes();
-                Node[] nodes = customHandler.generate();
-
-                BorderPane.setAlignment(nodes[0], Pos.TOP_CENTER);
-                BorderPane.setAlignment(nodes[1], Pos.CENTER);
-                BorderPane.setAlignment(nodes[2], Pos.BOTTOM_CENTER);
-
-                borderPane.setTop(nodes[0]);
-                borderPane.setCenter(nodes[1]);
-                borderPane.setBottom(nodes[2]);
-            }
-        });
-        customQButton.setAlignment(Pos.BOTTOM_CENTER);
-
         quickQHBox.setAlignment(Pos.TOP_CENTER);
         quickQHBox.getChildren().add(randomQButton);
 
@@ -89,18 +71,12 @@ public class GUI extends Application{
 
         BorderPane.setAlignment(welcomeLabel, Pos.CENTER);
         BorderPane.setMargin(welcomeLabel, new Insets(12,12,12,12));
-        BorderPane.setAlignment(customQButton, Pos.CENTER);
 
         CustomQuestionNodes customHandler = new CustomQuestionNodes();
-        Node[] nodes = customHandler.generate();
-
-        VBox customVbox = new VBox();
-        customVbox.setSpacing(20);
-        customVbox.setAlignment(Pos.CENTER);
-        customVbox.getChildren().addAll(nodes[0], nodes[1], nodes[2]);
+        customBox = customHandler.generate();
 
         borderPane.setTop(headerVBox);
-        borderPane.setCenter(customVbox);
+        borderPane.setCenter(customBox);
 
         mainScene = new Scene(borderPane, 400, 400);
     }
@@ -119,6 +95,7 @@ public class GUI extends Application{
         borderPane.getChildren().remove(quickQHBox);
         BorderPane.setAlignment(submitButton, Pos.BOTTOM_CENTER);
         borderPane.setBottom(submitButton);
+        borderPane.getChildren().remove(customBox);
 
         submitButton.addEventHandler(ActionEvent.ANY, new EventHandler<ActionEvent>() {
             @Override
@@ -247,8 +224,8 @@ public class GUI extends Application{
     }
 
     public void restartGame(){
-        borderPane.setTop(welcomeLabel);
-        borderPane.setCenter(quickQHBox);
+        borderPane.setTop(headerVBox);
+        borderPane.setCenter(customBox);
         borderPane.getChildren().remove(reviewButton);
     }
 
