@@ -43,11 +43,12 @@ public class CreateAnsweringScene {
         for (TQuestion question : qList){
             VBox vbox = new VBox();
             vbox.setPadding(new Insets(20));
-            vbox.setSpacing(30);
+            vbox.setSpacing(25);
 
             String questionStr = question.getQuestion();
             questionStr = HtmlUtils.htmlUnescape(questionStr);
             Label questionLabel = new Label("Question " + i + ":\n" + questionStr);
+            questionLabel.setAlignment(Pos.TOP_CENTER);
             questionLabel.setWrapText(true);
             questionLabel.setPrefWidth(300);
             questionLabel.setPrefHeight(100);
@@ -66,6 +67,8 @@ public class CreateAnsweringScene {
 
                 T.setToggleGroup(group);
                 F.setToggleGroup(group);
+
+                T.setSelected(true);
 
                 vbox.getChildren().addAll(T, F);
             }
@@ -118,6 +121,13 @@ public class CreateAnsweringScene {
                 A2.setToggleGroup(group);
                 A3.setToggleGroup(group);
                 A4.setToggleGroup(group);
+
+                A1.setAlignment(Pos.TOP_CENTER);
+                A2.setAlignment(Pos.TOP_CENTER);
+                A3.setAlignment(Pos.TOP_CENTER);
+                A4.setAlignment(Pos.TOP_CENTER);
+
+                A1.setSelected(true);
 
                 vbox.getChildren().addAll(A1, A2, A3, A4);
             }
