@@ -24,7 +24,6 @@ public class HandleAPIRequests {
         type of category: 24 in total, +1 for any
         difficulty: easy, medium, hard, any
         type: true/false, multiple type, any
-        timed: true/false
      */
 
     private final Gson gson = new Gson();
@@ -35,7 +34,7 @@ public class HandleAPIRequests {
         return handleRequest();
     }
 
-    public TriviaSearch handleCustomRequests(ArrayList<String> req, boolean timed) {
+    public TriviaSearch handleCustomRequests(ArrayList<String> req) {
 
         List<String> categoryOptions = Arrays.asList(
                 "Any", "General Knowledge", "Books", "Film", "Music", "Musicals & Theatres",

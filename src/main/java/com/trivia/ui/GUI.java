@@ -28,6 +28,8 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GUI extends Application{
     private TriviaSearch results;
@@ -111,7 +113,12 @@ public class GUI extends Application{
         queries.add(difficultyStr);
         queries.add(typeStr);
 
-        results = APIHandler.handleCustomRequests(queries, false);
+        questionNum.getSelectionModel().selectFirst();
+        category.getSelectionModel().selectFirst();
+        difficulty.getSelectionModel().selectFirst();
+        type.getSelectionModel().selectFirst();
+
+        results = APIHandler.handleCustomRequests(queries);
         mainGame();
     };
 
