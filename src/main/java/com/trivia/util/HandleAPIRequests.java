@@ -45,15 +45,12 @@ public class HandleAPIRequests {
         );
 
         requestURL = "https://opentdb.com/api.php?";
-        System.out.println("Handler invoked.");
 
         requestURL = requestURL + "amount=" + req.get(0);
 
         if (!req.get(1).equals("Any")) {
             String categoryNum = Integer.toString(8 + categoryOptions.indexOf(req.get(1)));
             requestURL = requestURL + "&category=" + categoryNum;
-            System.out.println(categoryNum);
-            System.out.println(requestURL);
         }
 
         if (!req.get(2).equals("Any")) {
@@ -67,8 +64,6 @@ public class HandleAPIRequests {
                 requestURL = requestURL + "&type=boolean";
             }
         }
-
-        System.out.println(requestURL);
 
         return handleRequest();
     }

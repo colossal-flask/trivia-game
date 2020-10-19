@@ -1,6 +1,5 @@
 package com.trivia.model;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public class AnswerRecord {

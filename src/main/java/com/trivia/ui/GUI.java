@@ -8,9 +8,6 @@ import com.trivia.util.CreateReviewNodes;
 import com.trivia.util.HandleAPIRequests;
 import com.trivia.util.ValidateAnswer;
 import javafx.application.Application;
-import javafx.beans.Observable;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -19,7 +16,6 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -28,8 +24,6 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class GUI extends Application{
     private TriviaSearch results;
@@ -91,7 +85,6 @@ public class GUI extends Application{
     }
 
     private final EventHandler<ActionEvent> randomQEvent = actionEvent -> {
-        System.out.println("Fetching question from API.");
         results = APIHandler.handleRandomRequest();
         mainGame();
     };
@@ -153,7 +146,6 @@ public class GUI extends Application{
                 for (Node radio : radioSubList) {
                     RadioButton rad = (RadioButton) radio;
                     if (rad.isSelected()) {
-                        System.out.println(rad.getText());
                         answer = rad.getText();
                     }
                 }
@@ -172,53 +164,12 @@ public class GUI extends Application{
 
     public void iterateQuestions(List<VBox> vList){
         if (vList.size() == 0){
-            System.out.println("Done.");
             gameFinished();
         }
         else {
             borderPane.setTop(vList.get(0));
         }
     }
-
-    /*public void iterateQuestions(List<TQuestion> qList){
-        if(qList.size() == 0){System.out.println("Done. " + score.getScore()); gameFinished();}
-        else {
-            TQuestion question = qList.get(0);
-            qList.remove(0);
-
-            CreateAnsweringScene nodeSwitcher = new CreateAnsweringScene(question);
-            Node[] nodeList = nodeSwitcher.creator();
-
-            VBox vbox = (VBox) nodeList[1];
-            submitButton = (Button) nodeList[2];
-
-            submitButton.addEventHandler(ActionEvent.ANY, new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent actionEvent) {
-                    String answer = "";
-
-                    for (Node radio : vbox.getChildren()){
-                        RadioButton rad = (RadioButton) radio;
-                        if (rad.isSelected()){
-                            System.out.println(rad.getText());
-                            answer = rad.getText();
-                        }
-                    }
-
-                    ValidateAnswer validator = new ValidateAnswer(question, answer);
-                    score.addQuestion(question, validator.validate());
-
-                    iterateQuestions(qList);
-                }
-            });
-
-            BorderPane.setAlignment(nodeList[0], Pos.CENTER);
-            BorderPane.setAlignment(nodeList[2], Pos.CENTER);
-            borderPane.setTop(nodeList[0]);
-            borderPane.setCenter(nodeList[1]);
-            borderPane.setBottom(submitButton);
-        }
-    }*/
 
     public void gameFinished(){
         restartButton = new Button("Play Again!");
@@ -293,7 +244,6 @@ public class GUI extends Application{
 
     public void reviewIterator(List<VBox> aList){
         if (aList.size() == 0){
-            System.out.println("Done.");
             borderPane.getChildren().remove(nextReviewButton);
             restartGame();
         }
